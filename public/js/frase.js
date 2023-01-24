@@ -1,0 +1,48 @@
+var btnFrase = $('#botao-frase');
+btnFrase.click(fraseAleatoria);
+
+var btnFraseId = $('#botao-frase-id');
+btnFraseId.click(buscaFrase);
+
+function fraseAleatoria(){
+    $("#spinner").toggle();
+    $.get("http://localhost:3000/frases", trocaFraseAleatoria).fail(function (){
+    $("#erro").toggle();
+        
+    setTimeout(function(){
+        $("#erro").toggle();
+    }, 2000);
+    }).always(function(){
+        $("#spinner").toggle();
+    });
+}
+function trocaFraseAleatoria(data){
+    var frase = $(".frase");
+    var numeroAleatorio = Math.floor(Math.random() * data.length);
+    frase.text(data[numeroAleatorio].texto);
+    atualizaTamanhoFrase();
+    atualizaTempoInicial(data[numeroAleatorio].tempo);
+}
+
+function buscaFrase(){
+    $("#spinner").toggle();
+    var fraseId = $('#frase-id').val();
+    var dados = {
+        id: fraseId
+    };
+    $.get("http://localhost:3000/frases",dados,trocaFrase).fail(function (){
+        setTimeout(function(){
+            $("#erro").toggle();
+        }, 2000);
+    }).always(function(){
+        $("#spinner").toggle();
+    })
+}
+
+function trocaFrase(data){
+    console.log("busquei");
+    var frase = $(".frase");
+    frase.text(data.texto);
+    atualizaTamanhoFrase();
+    atualizaTempoInicial(data.tempo);
+}
